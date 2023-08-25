@@ -1,22 +1,24 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import CoinList from './components/CoinList';
 
 function App() {
+  const [cryptocurrencies, setCryptocurrencies] = useState([]);
+
+  useEffect(() => {
+    fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false')
+      .then(response => response.json())
+      .then(data => {
+        setCryptocurrencies(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Cryptocurrency Dashboard</h1>
+        <CoinList cryptocurrencies={cryptocurrencies} />
       </header>
     </div>
   );
